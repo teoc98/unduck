@@ -15,10 +15,10 @@ const sortedBangs = ([...bangs] as Bang[]).sort((a, b) => b.r - a.r);
 
 function noSearchDefaultPageRender() {
   const app = document.querySelector<HTMLDivElement>("#app")!;
-  const currentDefaultBang = localStorage.getItem("default-bang") ?? "g";
+  const currentDefaultBang = localStorage.getItem("default-bang");
 
   const bangOptions = sortedBangs
-    .map((b: Bang) => `<option value="${b.t} - ${b.s}">`)
+    .map((b: Bang) => `<option value="${b.t} - ${b.s} (${b.d})">`)
     .join("");
 
   app.innerHTML = `
@@ -39,7 +39,7 @@ function noSearchDefaultPageRender() {
         </div>
         <div class="bang-selector-container">
           <label for="bang-selector">Default search engine:</label>
-          <input list="bang-options" id="bang-selector" value="${currentDefaultBang} - ${sortedBangs.find((b: Bang) => b.t === currentDefaultBang)?.s ?? 'Google'}" />
+          <input list="bang-options" id="bang-selector" value="${currentDefaultBang ? `${currentDefaultBang} - ${sortedBangs.find((b: Bang) => b.t === currentDefaultBang)?.s} (${sortedBangs.find((b: Bang) => b.t === currentDefaultBang)?.d})` : ''}" />
           <datalist id="bang-options">
             ${bangOptions}
           </datalist>
