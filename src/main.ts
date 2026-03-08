@@ -33,13 +33,18 @@ function noSearchDefaultPageRender() {
             value="${window.location.href.split('?')[0]}?q=%s"
             readonly 
           />
-          <button class="copy-button">
+          <button class="copy-button icon-button">
             <img src="clipboard.svg" alt="Copy" />
           </button>
         </div>
         <div class="bang-selector-container">
           <label for="bang-selector">Default search engine:</label>
-          <input list="bang-options" id="bang-selector" value="${currentDefaultBang ? `${currentDefaultBang} - ${sortedBangs.find((b: Bang) => b.t === currentDefaultBang)?.s} (${sortedBangs.find((b: Bang) => b.t === currentDefaultBang)?.d})` : ''}" />
+          <div class="bang-selector-row">
+            <input list="bang-options" id="bang-selector" value="${currentDefaultBang ? `${currentDefaultBang} - ${sortedBangs.find((b: Bang) => b.t === currentDefaultBang)?.s} (${sortedBangs.find((b: Bang) => b.t === currentDefaultBang)?.d})` : ''}" />
+            <button id="save-bang" class="save-button icon-button">
+              <img src="save.svg" alt="Save" />
+            </button>
+          </div>
           <datalist id="bang-options">
             ${bangOptions}
           </datalist>
@@ -65,9 +70,21 @@ function noSearchDefaultPageRender() {
   });
 
   const bangSelector = app.querySelector<HTMLInputElement>("#bang-selector")!;
-  bangSelector.addEventListener("change", () => {
-    const selectedTag = bangSelector.value.split(" - ")[0];
-    localStorage.setItem("default-bang", selectedTag);
+  const saveButton = app.querySelector<HTMLButtonElement>("#save-bang")!;
+  const saveIcon = saveButton.querySelector("img")!;
+
+  saveButton.addEventListener("click", () => {
+    const selectedValue = bangSelector.value;
+    if (selectedValue) {
+      const selectedTag = selectedValue.split(" - ")[0];
+      localStorage.setItem("default-bang", selectedTag);
+    } else {
+      localStorage.removeItem("default-bang");
+    }
+    saveIcon.src = "check.svg";
+    setTimeout(() => {
+      saveIcon.src = "save.svg";
+    }, 2000);
   });
 }
 
