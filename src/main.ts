@@ -1,8 +1,26 @@
 import { bangs } from "./bang";
 import "./global.css";
 
+interface Bang {
+  c: string;
+  d: string;
+  r: number;
+  s: string;
+  sc: string;
+  t: string;
+  u: string;
+}
+
+const sortedBangs = ([...bangs] as Bang[]).sort((a, b) => b.r - a.r);
+
 function noSearchDefaultPageRender() {
   const app = document.querySelector<HTMLDivElement>("#app")!;
+  const currentDefaultBang = localStorage.getItem("default-bang") ?? "g";
+
+  const bangOptions = sortedBangs
+    .map((b: Bang) => `<option value="${b.t} - ${b.s}">`)
+    .join("");
+
   app.innerHTML = `
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
       <div class="content-container">
@@ -18,6 +36,13 @@ function noSearchDefaultPageRender() {
           <button class="copy-button">
             <img src="clipboard.svg" alt="Copy" />
           </button>
+        </div>
+        <div class="bang-selector-container">
+          <label for="bang-selector">Default search engine:</label>
+          <input list="bang-options" id="bang-selector" value="${currentDefaultBang} - ${sortedBangs.find((b: Bang) => b.t === currentDefaultBang)?.s ?? 'Google'}" />
+          <datalist id="bang-options">
+            ${bangOptions}
+          </datalist>
         </div>
       </div>
       <footer class="footer">
@@ -37,6 +62,12 @@ function noSearchDefaultPageRender() {
     setTimeout(() => {
       copyIcon.src = "clipboard.svg";
     }, 2000);
+  });
+
+  const bangSelector = app.querySelector<HTMLInputElement>("#bang-selector")!;
+  bangSelector.addEventListener("change", () => {
+    const selectedTag = bangSelector.value.split(" - ")[0];
+    localStorage.setItem("default-bang", selectedTag);
   });
 }
 
