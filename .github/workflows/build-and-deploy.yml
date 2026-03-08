@@ -58,6 +58,7 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
+          personal_token: ${{ secrets.TOKEN }}
           publish_dir: ./dist
           publish_branch: gh-pages
           allow_empty_commit: false
