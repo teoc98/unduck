@@ -11,7 +11,7 @@
             readonly 
           />
           <button class="copy-button">
-            <img src="/clipboard.svg" alt="Copy" />
+            <img src="clipboard.svg" alt="Copy" />
           </button>
         </div>
       </div>
@@ -19,4 +19,4 @@
         <a href="https://github.com/teoc98/unduck" target="_blank">github</a>
       </footer>
     </div>
-  `;const c=t.querySelector(".copy-button"),r=c.querySelector("img"),a=t.querySelector(".url-input");c.addEventListener("click",async()=>{await navigator.clipboard.writeText(a.value),r.src="/clipboard-check.svg",setTimeout(()=>{r.src="/clipboard.svg"},2e3)})}const l=localStorage.getItem("default-bang")??"g",p=w.find(t=>t.t===l);function m(){var i,n;const c=((i=new URL(window.location.href).searchParams.get("q"))==null?void 0:i.trim())??"";if(!c)return d(),null;const r=c.match(/!(\S+)/i),a=(n=r==null?void 0:r[1])==null?void 0:n.toLowerCase(),e=w.find(h=>h.t===a)??p,s=c.replace(/!\S+\s*/i,"").trim();if(s==="")return e?`https://${e.d}`:null;const o=e==null?void 0:e.u.replace("{{{s}}}",encodeURIComponent(s).replace(/%2F/g,"/"));return o||null}function u(){const t=m();t&&window.location.replace(t)}u();
+  `;const c=t.querySelector(".copy-button"),r=c.querySelector("img"),a=t.querySelector(".url-input");c.addEventListener("click",async()=>{await navigator.clipboard.writeText(a.value),r.src="clipboard-check.svg",setTimeout(()=>{r.src="clipboard.svg"},2e3)})}const l=localStorage.getItem("default-bang")??"g",p=w.find(t=>t.t===l);function m(){var i,n;const c=((i=new URL(window.location.href).searchParams.get("q"))==null?void 0:i.trim())??"";if(!c)return d(),null;const r=c.match(/!(\S+)/i),a=(n=r==null?void 0:r[1])==null?void 0:n.toLowerCase(),e=w.find(h=>h.t===a)??p,s=c.replace(/!\S+\s*/i,"").trim();if(s==="")return e?`https://${e.d}`:null;const o=e==null?void 0:e.u.replace("{{{s}}}",encodeURIComponent(s).replace(/%2F/g,"/"));return o||null}function u(){const t=m();t&&window.location.replace(t)}u();
