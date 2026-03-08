@@ -12,7 +12,7 @@ function noSearchDefaultPageRender() {
           <input 
             type="text" 
             class="url-input"
-            value="${window.location.origin}/?q=%s"
+            value="${window.location.href.split('?')[0]}?q=%s"
             readonly 
           />
           <button class="copy-button">

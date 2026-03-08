@@ -28,6 +28,8 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          VITE_BASE_URL: /${{ github.event.repository.name }}/
 
       - name: Upload artifact (dist)
         uses: actions/upload-artifact@v4
