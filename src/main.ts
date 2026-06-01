@@ -13,16 +13,16 @@ interface Bang {
 
 const sortedBangs = ([...bangs] as Bang[]).sort((a, b) => b.r - a.r);
 
-function findBang(tag) {
+function findBang(tag: string | null | undefined) {
   return tag ? bangs.find((b) => b.t === tag) : null;
 }
 
-function formatBang(tag) {
+function formatBang(tag: string) {
   let bang = findBang(tag);
   return tag + (bang ? ` - ${bang.s} (${bang.d})` : "");
 }
 
-function searchEngineUrl(tag) {
+function searchEngineUrl(tag: string | null) {
   return `${window.location.href.split('?')[0]}?${tag ? `d=${tag}&` : ""}q=%s`;
 }
 
@@ -98,8 +98,8 @@ function noSearchDefaultPageRender() {
   const saveButton = app.querySelector<HTMLButtonElement>("#save-bang")!;
   const saveIcon = saveButton.querySelector("img")!;
 
-  function getSelectedTag(selector) {
-    const selectedValue = bangSelector.value;
+  function getSelectedTag(selector: HTMLInputElement) {
+    const selectedValue = selector.value;
     return selectedValue?.match(/^[^\s]+/)?.[0] ?? null;
   }
 
