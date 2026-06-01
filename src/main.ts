@@ -74,6 +74,8 @@ function noSearchDefaultPageRender() {
         </ul>
       </div>
       <footer class="footer">
+        <a href="src/bang.ts" target="_blank">bangs</a>
+        <span> · </span>
         <a href="https://github.com/teoc98/unduck" target="_blank">github</a>
       </footer>
     </div>
