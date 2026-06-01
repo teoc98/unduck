@@ -13,6 +13,19 @@ interface Bang {
 
 const sortedBangs = ([...bangs] as Bang[]).sort((a, b) => b.r - a.r);
 
+function findBang(tag) {
+  return tag ? bangs.find((b) => b.t === tag) : null;
+}
+
+function formatBang(tag) {
+  let bang = findBang(tag);
+  return tag + (bang ? ` - ${bang.s} (${bang.d})` : "");
+}
+
+function searchEngineUrl(tag) {
+  return `${window.location.href.split('?')[0]}?${tag ? `d=${tag}&` : ""}q=%s`;
+}
+
 function noSearchDefaultPageRender() {
   const app = document.querySelector<HTMLDivElement>("#app")!;
   const currentDefaultBang = localStorage.getItem("default-bang");
@@ -30,7 +43,7 @@ function noSearchDefaultPageRender() {
           <input 
             type="text" 
             class="url-input"
-            value="${window.location.href.split('?')[0]}?q=%s"
+            value="${searchEngineUrl(null)}"
             readonly 
           />
           <button class="copy-button icon-button">
@@ -40,7 +53,7 @@ function noSearchDefaultPageRender() {
         <div class="bang-selector-container">
           <label for="bang-selector">Default search engine:</label>
           <div class="bang-selector-row">
-            <input list="bang-options" id="bang-selector" value="${currentDefaultBang ? `${currentDefaultBang} - ${sortedBangs.find((b: Bang) => b.t === currentDefaultBang)?.s} (${sortedBangs.find((b: Bang) => b.t === currentDefaultBang)?.d})` : ''}" />
+            <input list="bang-options" id="bang-selector" value="${currentDefaultBang ? formatBang(currentDefaultBang) : ''}" />
             <button id="save-bang" class="save-button icon-button">
               <img src="save.svg" alt="Save" />
             </button>
@@ -48,7 +61,17 @@ function noSearchDefaultPageRender() {
           <datalist id="bang-options">
             ${bangOptions}
           </datalist>
-        </div>
+         </div>
+      </div>
+      <div>
+        <br>
+        Unduck uses in order:
+        <ul>
+          <li>the bang in the query</li>
+          <li>the bang in the <mono>d<mono> parameter</li>
+          <li>the default search engine</li>
+          <li>Google</li>
+        </ul>
       </div>
       <footer class="footer">
         <a href="https://github.com/teoc98/unduck" target="_blank">github</a>
@@ -73,10 +96,19 @@ function noSearchDefaultPageRender() {
   const saveButton = app.querySelector<HTMLButtonElement>("#save-bang")!;
   const saveIcon = saveButton.querySelector("img")!;
 
-  saveButton.addEventListener("click", () => {
+  function getSelectedTag(selector) {
     const selectedValue = bangSelector.value;
-    if (selectedValue) {
-      const selectedTag = selectedValue.split(" - ")[0];
+    return selectedValue?.match(/^[^\s]+/)?.[0] ?? null;
+  }
+
+  bangSelector.addEventListener("input", () => {
+    const selectedTag = getSelectedTag(bangSelector);
+    urlInput.value = searchEngineUrl(selectedTag);
+  });
+
+  saveButton.addEventListener("click", () => {
+    const selectedTag = getSelectedTag(bangSelector);
+    if (selectedTag) {
       localStorage.setItem("default-bang", selectedTag);
     } else {
       localStorage.removeItem("default-bang");
@@ -88,12 +120,10 @@ function noSearchDefaultPageRender() {
   });
 }
 
-const LS_DEFAULT_BANG = localStorage.getItem("default-bang") ?? "g";
-const defaultBang = bangs.find((b) => b.t === LS_DEFAULT_BANG);
-
 function getBangredirectUrl() {
   const url = new URL(window.location.href);
   const query = url.searchParams.get("q")?.trim() ?? "";
+  const def = url.searchParams.get("d")?.trim() ?? "";
   if (!query) {
     noSearchDefaultPageRender();
     return null;
@@ -101,8 +131,17 @@ function getBangredirectUrl() {
 
   const match = query.match(/!(\S+)/i);
 
-  const bangCandidate = match?.[1]?.toLowerCase();
-  const selectedBang = bangs.find((b) => b.t === bangCandidate) ?? defaultBang;
+  const bangCandidates = [
+    match?.[1]?.toLowerCase(),
+    def.toLowerCase(),
+    localStorage.getItem("default-bang"),
+    "g"
+  ];
+  let selectedBang;
+  for (const bangCandidate of bangCandidates) {
+    if (selectedBang = findBang(bangCandidate))
+      break;
+  }
 
   // Remove the first bang from the query
   const cleanQuery = query.replace(/!\S+\s*/i, "").trim();
